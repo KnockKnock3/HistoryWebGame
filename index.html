@@ -10,7 +10,7 @@
     <h1 id="title">Sort the events in order</h1>
     <h2 id="score">Score: 0</h2>
 
-    <div id="timeline">
+    <div id="timeline" ondragover="dragoverHandler(event)" ondrop="dropHandler(event)">
 
         <div class="event_item">
             <p>Hello World 1</p>
@@ -67,7 +67,7 @@
     </div>
 
     <div id="footer_event">
-        <div class="event_item">
+        <div class="event_item" draggable="true">
             <p>Hello World 3</p>
         </div>
     </div>
