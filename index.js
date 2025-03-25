@@ -10,7 +10,6 @@ const events = [
     { name: "Fall of the Berlin Wall", year: 1989 }
 ];
 
-//events_queue = events.slice().sort(() => 0.5 - Math.random())
 events_queue = []
 
 function new_event_item(random_event) {
@@ -67,6 +66,7 @@ function add_reset_button() {
 
 function reset_game() {
     events_queue = events.slice().sort(() => 0.5 - Math.random())
+    score.innerText = "Score: 0"
 
     clear_timeline()
     clear_footer()
@@ -77,18 +77,11 @@ function reset_game() {
 function randomise_footer_event() {
     random_event = events_queue.shift()
 
-    event_item - new_event_item(random_event)
-
-    //event_item = document.createElement("div")
-    //event_item.classList.add("event_item")
+    event_item = new_event_item(random_event)
     event_item.setAttribute("draggable", "true")
     event_item.setAttribute("ondragstart", "dragstartHandler(event)")
     event_item.id = "dragging"
 
-    //event_text = document.createElement("p")
-    //event_text.innerText = random_event.name
-
-    //event_item.appendChild(event_text)
     footer.appendChild(event_item)
 }
 
@@ -102,8 +95,6 @@ function dragoverHandler(ev) {
 
     const afterElement = getDragAfterElement(timeline, ev.clientY);
     const dragging = document.querySelector(".dragging");
-
-    console.log(afterElement)
 
     if (afterElement == null) {
         timeline.appendChild(dragging); // If no events, place at end
