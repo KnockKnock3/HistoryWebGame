@@ -12,9 +12,7 @@ const events = [
 
 events_queue = events.slice().sort(() => 0.5 - Math.random())
 
-function add_random_event() {
-    random_event = events_queue.shift()
-
+function new_event_item(random_event) {
     event_item = document.createElement("div")
     event_item.classList.add("event_item")
 
@@ -22,7 +20,24 @@ function add_random_event() {
     event_text.innerText = random_event.name
 
     event_item.appendChild(event_text)
-    timeline.appendChild(event_item)
+
+    return event_item
+}
+
+function add_starting_event() {
+    random_event_1 = events_queue.shift()
+    random_event_2 = events_queue.shift()
+
+    event_item_1 = new_event_item(random_event_1)
+    event_item_2 = new_event_item(random_event_2)
+
+    if (random_event_1.year > random_event_2.year) {
+        timeline.appendChild(event_item_1)
+        timeline.appendChild(event_item_2)
+    } else {
+        timeline.appendChild(event_item_2)
+        timeline.appendChild(event_item_1)
+    }
 }
 
 function clear_timeline() {
@@ -75,7 +90,7 @@ function dragoverHandler(ev) {
 
 function dropHandler(ev) {
     ev.preventDefault();
-    
+
     const data = ev.dataTransfer.getData("text");
     event_item = document.getElementById(data)
     event_item.removeAttribute('id');
@@ -107,6 +122,5 @@ function getDragAfterElement(container, y) {
 
 clear_timeline()
 clear_footer()
-add_random_event()
-add_random_event()
+add_starting_event()
 randomise_footer_event()
