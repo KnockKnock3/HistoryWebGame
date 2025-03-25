@@ -10,11 +10,13 @@ const events = [
     { name: "Fall of the Berlin Wall", year: 1989 }
 ];
 
-events_queue = events.slice().sort(() => 0.5 - Math.random())
+//events_queue = events.slice().sort(() => 0.5 - Math.random())
+events_queue = []
 
 function new_event_item(random_event) {
     event_item = document.createElement("div")
     event_item.classList.add("event_item")
+    event_item.setAttribute("year", random_event.year.toString())
 
     event_text = document.createElement("p")
     event_text.innerText = random_event.name
@@ -52,19 +54,41 @@ function clear_footer() {
     }
 }
 
+function add_reset_button() {
+    clear_footer()
+
+    reset_button = document.createElement("button")
+    reset_button.classList.add("event_item", "reset_button")
+    reset_button.innerText = "Reset"
+    reset_button.setAttribute("onclick", "reset_game()")
+
+    footer.appendChild(reset_button)
+}
+
+function reset_game() {
+    events_queue = events.slice().sort(() => 0.5 - Math.random())
+
+    clear_timeline()
+    clear_footer()
+    add_starting_event()
+    randomise_footer_event()
+}
+
 function randomise_footer_event() {
     random_event = events_queue.shift()
 
-    event_item = document.createElement("div")
-    event_item.classList.add("event_item")
+    event_item - new_event_item(random_event)
+
+    //event_item = document.createElement("div")
+    //event_item.classList.add("event_item")
     event_item.setAttribute("draggable", "true")
     event_item.setAttribute("ondragstart", "dragstartHandler(event)")
     event_item.id = "dragging"
 
-    event_text = document.createElement("p")
-    event_text.innerText = random_event.name
+    //event_text = document.createElement("p")
+    //event_text.innerText = random_event.name
 
-    event_item.appendChild(event_text)
+    //event_item.appendChild(event_text)
     footer.appendChild(event_item)
 }
 
@@ -98,11 +122,33 @@ function dropHandler(ev) {
     event_item.removeAttribute('ondragstart');
     event_item.classList.remove("dragging")
 
+    if (!check_if_ordered()) {
+        score.innerText = "You lose"
+        add_reset_button()
+        return
+    }
+
+    score.innerText = "Score: " + (timeline.childElementCount - 2).toString()
+
     if (events_queue.length > 0) {
         randomise_footer_event()
     } else {
         score.innerText = "You win"
+        add_reset_button()
     }
+}
+
+function check_if_ordered() {
+    last_year = Infinity
+    for (child of timeline.children) {
+        new_year = Number(child.getAttribute("year"))
+        if (new_year > last_year) {
+            return false
+        } else {
+            last_year = new_year
+        }
+    }
+    return true
 }
 
 function getDragAfterElement(container, y) {
@@ -118,9 +164,6 @@ function getDragAfterElement(container, y) {
         return closest;
       }
     }, { offset: Number.NEGATIVE_INFINITY }).element;
-  }
+}
 
-clear_timeline()
-clear_footer()
-add_starting_event()
-randomise_footer_event()
+reset_game()
